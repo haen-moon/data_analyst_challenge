@@ -22,8 +22,8 @@ create table clean.clinics_with_patients_clean (
     patient_id                      TEXT,
     clinic_title                    VARCHAR(255),
     clinic_id                       TEXT,
-    created_at                      DATE,
-    deleted_at                      DATE,
+    patient_created_at_date         DATE,
+    patient_deleted_at_date         DATE,
     processed_at                    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -31,7 +31,7 @@ drop table if exists clean.modules_clean;
 create table clean.modules_clean (
     module_event_id         SERIAL PRIMARY KEY,
     patient_id              TEXT,
-    module_generated_date   DATE,
+    module_completion_date  DATE,
     number_of_modules       INTEGER,
     processed_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

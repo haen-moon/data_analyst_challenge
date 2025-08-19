@@ -58,13 +58,13 @@ BEGIN
     start_time := NOW();
     TRUNCATE TABLE clean.clinics_with_patients_clean;
 
-    insert into clean.clinics_with_patients_clean (patient_id, clinic_title, clinic_id, created_at, deleted_at)
+    insert into clean.clinics_with_patients_clean (patient_id, clinic_title, clinic_id, patient_created_at_date, patient_deleted_at_date)
     select
         nullif(trim(patient_id),'') as patient_id,
         regexp_replace(initcap(trim(clinic_title)), '\s+', ' ', 'g') as clinic_title,
         nullif(trim(clinic_id),'') as clinic_id,
-        to_date(nullif(trim(created_at), ''), 'dd/mm/yyyy') as created_at,
-        to_date(nullif(trim(deleted_at), ''), 'dd/mm/yyyy') as deleted_at
+        to_date(nullif(trim(created_at), ''), 'dd/mm/yyyy') as patient_created_at_date,
+        to_date(nullif(trim(deleted_at), ''), 'dd/mm/yyyy') as patient_deleted_at_date
     from raw.clinics_with_patients_raw cp
     where nullif(trim(patient_id), '') is not null
     and nullif(trim(clinic_id), '') is not null;
@@ -78,11 +78,11 @@ BEGIN
     start_time := NOW();
     TRUNCATE TABLE clean.modules_clean;
 
-    insert into clean.modules_clean(patient_id, module_generated_date, number_of_modules)
+    insert into clean.modules_clean(patient_id, module_completion_date, number_of_modules)
     with cleaned_raw_cte as
         (
             select nullif(trim(patient_id), '') as patient_id,
-                   to_date(nullif(trim(completion_date), ''), 'dd/mm/yyyy') as module_generated_date,
+                   to_date(nullif(trim(completion_date), ''), 'dd/mm/yyyy') as module_completion_date,
                    number_of_modules
             from raw.modules_raw
             where nullif(trim(patient_id), '') is not null
@@ -92,10 +92,10 @@ BEGIN
     aggregated as
         (
             select patient_id,
-                   module_generated_date,
+                   module_completion_date,
                    sum(number_of_modules) as number_of_modules
             from cleaned_raw_cte
-            group by patient_id, module_generated_date
+            group by patient_id, module_completion_date
         )
     select *
     from aggregated;
