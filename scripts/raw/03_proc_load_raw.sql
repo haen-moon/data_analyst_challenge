@@ -4,8 +4,9 @@ Stored Procedure: load_raw(data_dir TEXT)
 =========================================================================================
 Purpose:
 	Ingest CSV source files into the 'raw' schema (Ingestion Layer).
-  Actions per table:
-	  - TRUNCATE the target raw tables before loading new data.
+
+Actions per table:
+	- TRUNCATE the target raw tables before loading new data.
     - COPY command to load data from csv files.
     - Record two metadata columns in each row:
 	    * source_filename: filename without path
@@ -14,7 +15,7 @@ Purpose:
 Notes:
 	- Pass an ABSOLUTE path to the repository root as 'data_dir'.
 	- Date fields in CSV are dd.mm.yy; they are stored as TEXT in raw
-		and parsed in the clean layer.
+        and parsed in the clean layer.
 	- This procedure logs per-table durations and a final success message.
 
 Usage Example:
